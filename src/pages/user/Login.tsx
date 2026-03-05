@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/mian.css';
+import '../../styles/mian.css';
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -34,7 +34,7 @@ export default function Login() {
             // Redirect ตามประเภท user
             console.log('User role:', data.user.role);
             if (data.user.role === 'admin') {
-                navigate('/AdminDashboard');
+                navigate('/adminFoods');
             } else if (data.user.role === 'user') {
                 navigate('/foods');
             } else {

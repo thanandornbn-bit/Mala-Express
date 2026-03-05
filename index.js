@@ -23,9 +23,41 @@ const initMySQL = async () => {
     });
 }
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+//Middleware
+
+// Middleware ตรวจสอบว่าเป็น Admin
+const verifyAdmin = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ error: 'No token provided' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Invalid token' });
+        }
+        req.user = decoded;
+        next();
+    });
+};
+
+// Middleware ตรวจสอบ token 
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ error: 'No token provided' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Invalid token' });
+        }
+        req.user = decoded;
+        next();
+    });
+};
+
+// ========== USER QUERY ==========
 
 // ดึงข้อมูล
 app.get('/user', async (req, res) => {
@@ -109,6 +141,7 @@ app.put('/users/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 })
+
 // ========== AUTH ENDPOINTS ==========
 
 // Register
@@ -195,22 +228,6 @@ app.post('/login', async (req, res) => {
     }
 })
 
-// Middleware ตรวจสอบ token
-const verifyToken = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({ error: 'No token provided' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ error: 'Invalid token' });
-        }
-        req.user = decoded;
-        next();
-    });
-};
-
 // ตัวอย่าง protected route - ต้องมี token
 app.get('/profile', verifyToken, async (req, res) => {
     try {
@@ -221,13 +238,12 @@ app.get('/profile', verifyToken, async (req, res) => {
     }
 })
 
-
-
 // ========== FOOD ENDPOINTS ==========
+
 // ดึงรายการอาหารทั้งหมด
 app.get('/foods', async (req, res) => {
     try {
-        const [foods] = await conn.query('SELECT * FROM food');
+        const [foods] = await conn.query('SELECT * FROM foods');
         res.json(foods);
     } catch (err) {
         console.error('Error fetching foods:', err);
@@ -239,9 +255,9 @@ app.get('/foods', async (req, res) => {
 app.get('/foods/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const [food] = await conn.query('SELECT * FROM food WHERE id = ?', [id]);
-        if (food.length > 0) {
-            res.json(food[0]);
+        const [foods] = await conn.query('SELECT * FROM foods WHERE id = ?', [id]);
+        if (foods.length > 0) {
+            res.json(foods[0]);
         } else {
             res.status(404).json({ error: 'Food not found' });
         }
@@ -251,33 +267,17 @@ app.get('/foods/:id', async (req, res) => {
     }
 })
 
-// Middleware ตรวจสอบว่าเป็น Admin
-const verifyAdmin = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({ error: 'No token provided' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ error: 'Invalid token' });
-        }
-        req.user = decoded;
-        next();
-    });
-};
-
 // เพิ่มอาหารใหม่ (Admin only)
 app.post('/foods', verifyAdmin, async (req, res) => {
     try {
-        const { name, price, description, image } = req.body;
+        const { foodName, foodImage, foodType, foodAmount, foodPrice } = req.body;
         const [result] = await conn.query(
-            'INSERT INTO food (name, price, description, image) VALUES (?, ?, ?, ?)',
-            [name, price, description, image]
+            'INSERT INTO foods (foodName, foodImage, foodType, foodAmount, foodPrice) VALUES (?, ?, ?, ?, ?)',
+            [foodName, foodImage, foodType, foodAmount, foodPrice]
         );
         res.status(201).json({
             id: result.insertId,
-            name, price, description, image
+            foodName, foodImage, foodType, foodAmount, foodPrice
         });
     } catch (err) {
         console.error('Error adding food:', err);
@@ -289,13 +289,13 @@ app.post('/foods', verifyAdmin, async (req, res) => {
 app.put('/foods/:id', verifyAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, price, description, image } = req.body;
+        const { foodName, foodImage, foodType, foodAmount, foodPrice } = req.body;
         const [result] = await conn.query(
-            'UPDATE food SET name = ?, price = ?, description = ?, image = ? WHERE id = ?',
-            [name, price, description, image, id]
+            'UPDATE foods SET foodName = ?, foodImage = ? , foodType= ? , foodAmount = ? , foodPrice = ? WHERE id = ?',
+            [foodName, foodImage, foodType, foodAmount, foodPrice, id]
         );
         if (result.affectedRows > 0) {
-            res.json({ id, name, price, description, image });
+            res.json({ id, foodName, foodImage, foodType, foodAmount, foodPrice});
         } else {
             res.status(404).json({ error: 'Food not found' });
         }
@@ -309,7 +309,7 @@ app.put('/foods/:id', verifyAdmin, async (req, res) => {
 app.delete('/foods/:id', verifyAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        const [result] = await conn.query('DELETE FROM food WHERE id = ?', [id]);
+        const [result] = await conn.query('DELETE FROM foods WHERE id = ?', [id]);
         if (result.affectedRows > 0) {
             res.json({ message: 'Food deleted successfully' });
         } else {

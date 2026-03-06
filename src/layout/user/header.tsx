@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { googleLogout } from "@react-oauth/google";
 
 interface User {
     username: string;
@@ -30,6 +31,7 @@ export default function HeaderAdmin({ user }: HeaderAdminProps) {
         }catch(err){
             console.error('Logout error:', err);
         }
+        googleLogout();
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/login');

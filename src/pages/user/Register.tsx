@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { sendVerificationEmail } from "./emailService.js";
 
 export default function Register() {
     const [username, setUsername] = useState('');

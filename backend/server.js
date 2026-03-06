@@ -4,8 +4,9 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 const app = express();
-
+const client = new OAuth2Client("252649899378-e14ag845u9jq1ljeo2ggjj1mg038lj43.apps.googleusercontent.com");
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('page'));
@@ -320,6 +321,72 @@ app.delete('/foods/:id', verifyAdmin, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 })
+
+
+//************API GOOGLE************//
+
+app.post('/google-login', async (req, res) => {
+    try {
+
+        const { token } = req.body;
+
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: "252649899378-e14ag845u9jq1ljeo2ggjj1mg038lj43.apps.googleusercontent.com"
+        });
+
+        const payload = ticket.getPayload();
+
+        const email = payload.email;
+        const name = payload.name;
+
+        // ตรวจสอบว่ามี user ใน DB หรือยัง
+        const [user] = await conn.query('SELECT * FROM user WHERE email = ?', [email]);
+
+        let userId;
+
+        if (user.length === 0) {
+
+            // ถ้ายังไม่มี user ให้สร้างใหม่
+            const [result] = await conn.query(
+                'INSERT INTO user (username, email, password) VALUES (?, ?, ?)',
+                [name, email, 'google_login']
+            );
+
+            userId = result.insertId;
+
+        } else {
+            userId = user[0].id;
+        }
+
+        // สร้าง JWT
+        const jwtToken = jwt.sign(
+            { id: userId, email },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        res.json({
+            message: "Google login success",
+            token: jwtToken,
+            user: {
+                id: userId,
+                email,
+                username: name,
+                role: user[0]?.role || "user"
+            }
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(401).json({
+            error: "Google login failed"
+        });
+
+    }
+});
 
 
 app.listen(port, async () => {

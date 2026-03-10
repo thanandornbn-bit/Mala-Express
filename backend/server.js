@@ -146,43 +146,81 @@ app.put('/users/:id', async (req, res) => {
 // ========== AUTH ENDPOINTS ==========
 
 // Register
-app.post('/register', async (req, res) => {
-    try {
-        const { username, email, password} = req.body;
+// app.post('/register', async (req, res) => {
+//     try {
 
-        // ตรวจสอบว่ากรอกข้อมูลครบ
-        if (!username || !email || !password) {
-            return res.status(400).json({
-                error: 'Please provide username, email, and password'
-            });
-        }
+//         const { username, email, password } = req.body;
 
-        // ตรวจสอบว่า username หรือ email ซ้ำ
-        const [existingUser] = await conn.query('SELECT * FROM user WHERE username = ? OR email = ?', [username, email]);
-        if (existingUser.length > 0) {
-            return res.status(400).json({
-                error: 'Username or email already exists'
-            });
-        }
+//         if (!username || !email || !password) {
+//             return res.status(400).json({
+//                 error: 'Please provide username, email, and password'
+//             });
+//         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
+//         const [existingUser] = await conn.query(
+//             'SELECT * FROM user WHERE email = ?',
+//             [email]
+//         );
 
-        // บันทึกลงฐานข้อมูล
-        const [result] = await conn.query(
-            'INSERT INTO user (username, email,password) VALUES (?, ?, ?)',
-            [username, email, hashedPassword]
-        );
+//         if (existingUser.length > 0) {
+//             return res.status(400).json({
+//                 error: 'Email already exists'
+//             });
+//         }
 
-        res.status(201).json({
-            message: 'User registered successfully',
-            userId: result.insertId
-        });
-    } catch (err) {
-        console.error('Error registering user:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-})
+//         const hashedPassword = await bcrypt.hash(password, 10);
+
+//         const [result] = await conn.query(
+//             'INSERT INTO user (username, email, password) VALUES (?, ?, ?)',
+//             [username, email, hashedPassword]
+//         );
+
+//         // สร้าง token
+//         const token = jwt.sign(
+//             { userId: result.insertId },
+//             "secretkey",
+//             { expiresIn: "1d" }
+//         );
+
+//         const verificationLink = `http://localhost:3000/verify-email/${token}`;
+
+//         await transporter.sendMail({
+//             from: "yourgmail@gmail.com",
+//             to: email,
+//             subject: "Verify your email",
+//             html: `<h3>Click link to verify email</h3>
+//                    <a href="${verificationLink}">Verify Email</a>`
+//         });
+
+//         res.json({
+//             message: "Register success. Please check your email."
+//         });
+
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ error: 'Server error' });
+//     }
+// });
+
+// // verify gmail 
+// app.get('/verify-email/:token', async (req, res) => {
+
+//     try {
+
+//         const decoded = jwt.verify(req.params.token, "secretkey");
+
+//         await conn.query(
+//             "UPDATE user SET email_verified = true WHERE id = ?",
+//             [decoded.userId]
+//         );
+
+//         res.send("Email verified successfully");
+
+//     } catch (error) {
+//         res.status(400).send("Invalid token");
+//     }
+
+// });
 
 // Login
 app.post('/login', async (req, res) => {

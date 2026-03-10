@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/mian.css';
 import { GoogleLogin } from '@react-oauth/google';
-import { gapi } from 'gapi-script';
 
 
 
@@ -13,16 +12,6 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const clientId = "252649899378-e14ag845u9jq1ljeo2ggjj1mg038lj43.apps.googleusercontent.com"
-    useEffect(() => {
-        const initClient = () => {
-            gapi.client.init({
-                clientId: clientId,
-                scope: ""
-            })
-        }
-        gapi.load("client:auth2", initClient)
-    }, [])
 
     const onSuccess = async (credentialResponse: any) => {
 
@@ -206,8 +195,10 @@ export default function Login() {
 
                 <GoogleLogin
                     onSuccess={onSuccess}
-                    onError={() => onFailure}
-                />;
+                    onError={() => {
+                        console.log("Login Failed");
+                    }}
+                />
 
             </div>
         </div>

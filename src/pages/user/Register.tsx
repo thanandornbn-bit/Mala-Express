@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Register() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
@@ -37,7 +38,7 @@ export default function Register() {
             const response = await fetch('http://localhost:3000/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
+                body: JSON.stringify({ username, email, password, role })
             });
 
             const data = await response.json();
@@ -185,6 +186,23 @@ export default function Register() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                         placeholder="ยืนยันรหัสผ่าน"
+                        style={{
+                            backgroundColor: "#1a1a1a",
+                            color: "#fff",
+                            border: "1px solid #ffffff",
+                            borderRadius: "10px",
+                            height: "4vh",
+                            paddingLeft: "10px"
+                        }}
+                    />
+
+                    <input
+                        id="role"
+                        type="role"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        required
+                        placeholder="admin"
                         style={{
                             backgroundColor: "#1a1a1a",
                             color: "#fff",

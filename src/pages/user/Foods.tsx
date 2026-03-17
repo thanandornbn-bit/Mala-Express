@@ -51,7 +51,7 @@ export default function Foods() {
             setUser(JSON.parse(userData))
         }
 
-        fetch('http://localhost:3000/foods')
+        fetch('http://localhost:3000/food')
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -259,7 +259,7 @@ export default function Foods() {
                                         <span style={{
                                             color: '#ff6600',
                                             fontWeight: 600
-                                        }}>
+                                        }}> 
                                             {food.foodPrice} ฿
                                         </span>
 

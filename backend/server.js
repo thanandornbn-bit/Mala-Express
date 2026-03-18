@@ -1,26 +1,33 @@
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
+import express from "express"
+import cors from "cors"
+import dotenv from "dotenv"
 
-import { initMySQL } from './config/db.js';
+import userRoutes from "./routes/user.routes.js"
+import authRoutes from "./routes/auth.routes.js"
+import foodRoutes from "./routes/food.routes.js"
+import googleRoutes from "./routes/google.routes.js"
 
-import userRoutes from './routes/user.routes.js';
-import authRoutes from './routes/auth.routes.js';
-import foodRoutes from './routes/food.routes.js';
-import soupRoutes from './routes/soup.routes.js';
+import { initMySQL } from "./config/db.js"
 
-const app = express();
+dotenv.config()
 
-app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static('page'));
+const app = express()
 
-app.use('/user', userRoutes);
-app.use('/auth', authRoutes);
-app.use('/food', foodRoutes);
-app.use('/soup', soupRoutes);
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}))
 
-app.listen(3000, async () => {
-    await initMySQL();
-    console.log('Server running on port 3000');
-});
+app.use(express.json())
+
+app.use("/users", userRoutes)
+app.use("/auth", authRoutes)
+app.use("/foods", foodRoutes)
+app.use("/api/google", googleRoutes)
+
+const PORT = 3000
+
+app.listen(PORT, async () => {
+  await initMySQL()
+  console.log(`Server running on port ${PORT}`)
+})

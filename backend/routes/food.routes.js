@@ -1,13 +1,13 @@
-import express from 'express';
-import * as foodController from '../controllers/food.controller.js';
-import { verifyAdmin } from '../middleware/auth.middleware.js';
+import express from "express"
+import * as controller from "../controllers/food.controller.js"
+import { verifyAdmin } from "../middleware/auth.middleware.js"
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/', foodController.getFoods);
-router.get('/:id', foodController.getFoodById);
-router.post('/', verifyAdmin, foodController.createFood);
-router.put('/:id', verifyAdmin, foodController.updateFood);
-router.delete('/:id', verifyAdmin, foodController.deleteFood);
+router.get("/", controller.getFoods)
+router.get("/:id", controller.getFoodById)
+router.post("/", verifyAdmin, controller.createFood)
+router.put("/:id", verifyAdmin, controller.updateFood)
+router.delete("/:id", verifyAdmin, controller.deleteFood)
 
-export default router;
+export default router

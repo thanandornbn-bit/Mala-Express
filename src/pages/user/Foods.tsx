@@ -48,10 +48,15 @@ export default function Foods() {
         }
 
         if (userData) {
-            setUser(JSON.parse(userData))
+            try {
+                setUser(JSON.parse(userData))
+            } catch (error) {
+                console.error("Invalid user data in localStorage")
+                localStorage.removeItem("user")
+            }
         }
 
-        fetch('http://localhost:3000/food')
+        fetch('http://localhost:3000/foods')
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -184,7 +189,7 @@ export default function Foods() {
 
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
 
-            <Header user={user} />
+            <Header/>
 
             <div style={{ display: 'flex', flex: 1, marginTop: 60 }}>
 
@@ -259,7 +264,7 @@ export default function Foods() {
                                         <span style={{
                                             color: '#ff6600',
                                             fontWeight: 600
-                                        }}> 
+                                        }}>
                                             {food.foodPrice} ฿
                                         </span>
 
@@ -349,10 +354,10 @@ export default function Foods() {
                             border: 'none',
                             fontSize: 23,
                             cursor: 'pointer',
-                            marginTop:'8px',
+                            marginTop: '8px',
                         }}
                     >
-                        <FaBackspace style={{color:"red"}}/>
+                        <FaBackspace style={{ color: "red" }} />
                     </button>
 
                     <b>ตะกร้าสินค้า</b>

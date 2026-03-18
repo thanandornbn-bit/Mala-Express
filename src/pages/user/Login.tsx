@@ -15,7 +15,7 @@ export default function Login() {
 
     const onSuccess = async (credentialResponse: any) => {
 
-        const res = await fetch("http://localhost:3000/google-login", {
+        const res = await fetch("http://localhost:3000/api/google/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -43,7 +43,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/login', {
+            const response = await fetch('http://localhost:3000/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })

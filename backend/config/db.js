@@ -1,15 +1,19 @@
-import mysql from 'mysql2'
+import mysql from "mysql2/promise"
 
-const conn = null;
+let pool
 
-const initMysql = async () => {
-    conn = await mysql.createConnection({
-        host:'localhost',
-        user: 'root',
-        password: '1234',
-        database: 'malaexpress',
-        prot: '3306'
-    })
+export const initMySQL = async () => {
+  pool = mysql.createPool({
+    host: "localhost",
+    user: "root",
+    password: "1234",
+    database: "malaexpress",
+    port: "3306",
+    waitForConnections: true,
+    connectionLimit: 10
+  })
 }
 
-export const getDB = () => conn
+export const getConnection = () => {
+  return pool
+}

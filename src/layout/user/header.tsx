@@ -1,41 +1,33 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { googleLogout } from "@react-oauth/google";
+
 
 interface User {
     username: string;
 }
 
-interface HeaderAdminProps {
-    user: User | null;
-}
 
-export default function HeaderAdmin({ user }: HeaderAdminProps) {
+export default function HeaderAdmin() {
     const navigate = useNavigate();
-    const [error, setError] = useState('');
     const handleLogout = async () => {
-        try{
-            const response = await fetch('http://localhost:3000/login', {
-                method: 'get',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            const data = await response.json();
-
-            if (!response.ok) {
-                setError(data.error || 'Logout failed');
-                return;
-            }
-        }catch(err){
-            console.error('Logout error:', err);
-        }
         googleLogout();
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/login');
     };
+    const [user, setUser] = useState<User | null>(null)
+    useEffect (() => {
+        const storedUser = localStorage.getItem("user");
+        if(storedUser){
+            try {
+                setUser(JSON.parse(storedUser))
+            }catch{
+                localStorage.removeItem("user")
+            }
+        }
+    })
+
 
     return (
         <header className="admin-header">

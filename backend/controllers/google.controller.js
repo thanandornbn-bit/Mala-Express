@@ -22,24 +22,38 @@ export const googleLogin = async (req, res) => {
     )
 
     let userId
+    let username
+    let userRole
 
     if (!user.length) {
       const [result] = await conn.query(
-        "INSERT INTO user (username,email,password) VALUES (?,?,?)",
-        [payload.name, payload.email, "google_login"]
+        "INSERT INTO user (username,email,password,role) VALUES (?,?,?,?)",
+        [payload.name, payload.email, "google_login", "user"]
       )
       userId = result.insertId
+      username = payload.name
+      userRole = "user"
     } else {
       userId = user[0].id
+      username = user[0].username
+      userRole = user[0].role || "user"
     }
 
     const tokenJWT = jwt.sign(
-      { id: userId, email: payload.email },
+      { id: userId, email: payload.email, role: userRole },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     )
 
-    res.json({ token: tokenJWT })
+    res.json({ 
+      token: tokenJWT,
+      user: {
+        id: userId,
+        username: username,
+        email: payload.email,
+        role: userRole
+      }
+    })
 
   } catch (err) {
     res.status(401).json({ error: "Google login failed" })

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
+    const API_URL = import.meta.env.VITE_API_URL;
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');
@@ -11,6 +12,7 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate(); 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,7 +37,7 @@ export default function Register() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/auth/register', {
+            const response = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, email, password, role })

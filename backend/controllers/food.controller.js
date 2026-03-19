@@ -1,11 +1,13 @@
 import { getConnection } from "../config/db.js"
 
-export const getFoods = async (req, res) => {
+//ดึงข้อมูลอาหารทั้งหมด
+export const getAllFoods = async (req, res) => {
   const pool = getConnection()
   const [foods] = await pool.query("SELECT * FROM foods")
   res.json(foods)
 }
 
+//ดึงข้อมูลอาหารตาม ID
 export const getFoodById = async (req, res) => {
   const pool = getConnection()
   const [food] = await pool.query(
@@ -16,6 +18,7 @@ export const getFoodById = async (req, res) => {
   res.json(food[0])
 }
 
+//สร้างอาหาร
 export const createFood = async (req, res) => {
   const pool = getConnection()
   const { foodName, foodImage, foodType, foodAmount, foodPrice } = req.body
@@ -26,6 +29,7 @@ export const createFood = async (req, res) => {
   res.json({ id: result.insertId })
 }
 
+//อัปเดตอาหาร
 export const updateFood = async (req, res) => {
   const pool = getConnection()
   const { foodName, foodImage, foodType, foodAmount, foodPrice } = req.body
@@ -36,8 +40,16 @@ export const updateFood = async (req, res) => {
   res.json({ message: "Updated" })
 }
 
+//ลบอาหารด้วย ID
 export const deleteFood = async (req, res) => {
   const pool = getConnection()
   await pool.query("DELETE FROM foods WHERE id=?", [req.params.id])
   res.json({ message: "Deleted" })
+}
+
+//ลบอาหารทั้งหมด
+export const deleteAllFoods = async (req, res) => {
+  const pool = getConnection()
+  await pool.query("DELETE FROM foods")
+  res.json({ message: "All foods deleted" })
 }

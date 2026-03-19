@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderAdmin from "../../layout/admin/headerAdmin";
 import SidebarAdmin from "../../layout/admin/sidebarAdmin";
-import { FaPlus, FaEdit, FaTrash, FaUtensils, FaTimes, FaCloudUploadAlt } from "react-icons/fa";
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaTimes,
+  FaCloudUploadAlt,
+} from "react-icons/fa";
+import { IoMdCart } from "react-icons/io";
 
 interface Foods {
   id: number;
@@ -215,25 +222,36 @@ export default function AdminDashboard() {
     >
       <HeaderAdmin user={user} />
 
-      <div style={{ display: "flex", flex: 1, marginTop: "63px" }}>
+      <div style={{ display: "flex", flex: 1, marginTop: "60px" }}>
         <SidebarAdmin />
 
         <main
           style={{
             flex: 1,
-            padding: "24px",
-            overflowY: "auto",
+            marginLeft: "25vh",
+            display: "flex",
+            flexDirection: "column",
+            height: "calc(100vh - 60px)",
           }}
         >
-          {/* Header */}
+          {/* Header - Sticky */}
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "24px",
+              position: "sticky",
+              top: 0,
+              backgroundColor: "#ffffff",
+              padding: "24px 24px 0 24px",
+              zIndex: 10,
             }}
           >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "24px",
+              }}
+            >
             <h1
               style={{
                 fontSize: "28px",
@@ -245,7 +263,6 @@ export default function AdminDashboard() {
                 margin: 0,
               }}
             >
-              <FaUtensils style={{ color: "#4f46e5" }} />
               จัดการเมนูอาหาร
             </h1>
             <button
@@ -289,17 +306,25 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Divider */}
-          <hr
-            style={{
-              border: "none",
-              borderTop: "1px solid #e5e7eb",
-              marginBottom: "24px",
-            }}
-          />
+            {/* Divider */}
+            <hr
+              style={{
+                border: "none",
+                borderTop: "1px solid #e5e7eb",
+                marginBottom: "0",
+              }}
+            />
+          </div>
 
-          {/* Content */}
-          {foods.length === 0 ? (
+          {/* Scrollable Content Area */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "24px",
+            }}
+          >
+            {foods.length === 0 ? (
             <div
               style={{
                 textAlign: "center",
@@ -511,7 +536,8 @@ export default function AdminDashboard() {
                 </div>
               </div>
             ))
-          )}
+            )}
+          </div>
         </main>
       </div>
 
@@ -520,13 +546,15 @@ export default function AdminDashboard() {
         <div
           style={{
             position: "fixed",
-            top: "7vh",
-            left: "25vh",
-            right: "0",
-            bottom: "5vh",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1000,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            backgroundColor: "rgba(0,0,0,0.4)",
           }}
         >
           {/* Backdrop */}
@@ -534,15 +562,6 @@ export default function AdminDashboard() {
             onClick={() => {
               resetForm();
               setIsModalOpen(false);
-            }}
-            style={{
-              position: "absolute",
-              top: "7vh",
-              left: "25vh",
-              right: "0",
-              bottom: "5vh",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
             }}
           />
 
@@ -659,6 +678,7 @@ export default function AdminDashboard() {
                     accept="image/*"
                     onChange={handleImageChange}
                     style={{ display: "none" }}
+                    required
                   />
                   {imagePreview ? (
                     <img

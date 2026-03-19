@@ -16,7 +16,7 @@ export default function SidebarAdmin() {
                 style={{
                     marginTop: "-6.3vh",
                     height: "auto",
-                    backgroundColor: "#1a1a1a",
+                    backgroundColor: "#ffffff",
                     color: "white",
                     width: "25vh",
                     position: "relative",
@@ -29,28 +29,28 @@ export default function SidebarAdmin() {
                         flexDirection: "column",
                         paddingLeft: "1.25rem",
                         gap: "10px",
-                        backgroundColor: "#1a1a1a"
+                        backgroundColor: "#ffffff"
                     }}
                 >
                     {/* Foods */}
                     <div
                         onClick={() => navigate('/foods')}
                         style={{
-                            background: "#1a1a1a",
+                            background: "#ffffff",
                             display: "flex",
                             alignItems: "center",
                             gap: "10px",
                             cursor: "pointer",
                             padding: "10px 0",
-                            color: isActive('/foods') ? "orange" : "white",
+                            color: isActive('/foods') ? "orange" : "black",
                             borderRight: isActive('/foods')
                                 ? "7px solid orange"
                                 : "7px solid transparent",
                             transition: "0.2s",
                         }}
                     >
-                        <MdDashboard style={{ backgroundColor: "#1a1a1a" }} size={28} />
-                        <span style={{ fontSize: "1.1rem", background: "#1a1a1a" }}>
+                        <MdDashboard style={{ backgroundColor: "#ffffff" }} size={28} />
+                        <span style={{ fontSize: "1.1rem", background: "#ffffff" }}>
                             รายการอาหาร
                         </span>
                     </div>
@@ -62,28 +62,28 @@ export default function SidebarAdmin() {
                         flexDirection: "column",
                         paddingLeft: "1.25rem",
                         gap: "10px",
-                        backgroundColor: "#1a1a1a"
+                        backgroundColor: "#ffffff"
                     }}
                 >
                     {/* soups */}
                     <div
                         onClick={() => navigate('/soups')}
                         style={{
-                            background: "#1a1a1a",
+                            background: "#ffffff",
                             display: "flex",
                             alignItems: "center",
                             gap: "10px",
                             cursor: "pointer",
                             padding: "10px 0",
-                            color: isActive('/soups') ? "orange" : "white",
+                            color: isActive('/soups') ? "orange" : "black",
                             borderRight: isActive('/soups')
                                 ? "7px solid orange"
                                 : "7px solid transparent",
                             transition: "0.2s",
                         }}
                     >
-                        <TbSoupFilled style={{ backgroundColor: "#1a1a1a" }} size={28} />
-                        <span style={{ fontSize: "1.1rem", background: "#1a1a1a" }}>
+                        <TbSoupFilled style={{ backgroundColor: "#ffffff" }} size={28} />
+                        <span style={{ fontSize: "1.1rem", background: "#ffffff" }}>
                             รายการน้ำซุป
                         </span>
                     </div>

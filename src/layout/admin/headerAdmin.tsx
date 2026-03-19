@@ -36,40 +36,47 @@ export default function HeaderAdmin({ user }: HeaderAdminProps) {
     };
 
     return (
-        <header className="admin-header">
+        <header className="admin-header" style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+        }}>
             <div className="header-content" style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "1rem",
-                backgroundColor: "#1a1a1a",
+                backgroundColor: "#ffffff",
+                boxShadow: "rgba(60, 64, 67, 0.1) 0px 0px 5px 0px",
             }}>
                 {/* Left - Logo */}
                 <div className="header-left" style={{
-                    backgroundColor:"#1a1a1a"
+                    backgroundColor:"#ffffff"
                 }}>
                     <h1 className="logo" style={{
-                        backgroundColor:"#1a1a1a",
+                        backgroundColor:"#ffffff",
                         color:"orange",
                         fontSize:"1.5rem",
                         fontWeight:"bold",
-                    }}>🍜 Mala Express</h1>
+                    }}>Mala Express</h1>
                 </div>
 
                 {/* Right - User Info & Logout */}
                 <div className="header-right" style={{
                     display:"flex",
-                    backgroundColor:"#1a1a1a",
+                    backgroundColor:"#ffffff",
                     alignItems:"center"
                 }}>
                     <p className="welcome-text" style={{
-                        backgroundColor:"#1a1a1a",
-                        color:"#fff",
+                        backgroundColor:"#ffffff",
+                        color:"#000000",
                         marginRight:"1rem",
                     }}>
                         ยินดีต้อนรับ, <strong style={{
-                            backgroundColor:"#1a1a1a",
-                            color:"#ffffff"
+                            backgroundColor:"#ffffff",
+                            color:"#000000"
                         }}>{user?.username}</strong>
                     </p>
                     <button onClick={handleLogout} className="logout-btn" style={{
@@ -78,8 +85,7 @@ export default function HeaderAdmin({ user }: HeaderAdminProps) {
                         width:"13vh",
                         height:"3vh",
                         borderRadius:"10px",
-                        border:"1px solid #ffffff"
-                        
+                        border:"1px solid #1a1a1a"  
                     }}>
                         ออกจากระบบ
                     </button>
